@@ -17,14 +17,21 @@ class Kamakazi(Strategy):
 
     def __init__(self):
         self.start_pos = -1
+        self.start_positions = [(0,0), (9, 0), (0, 9), (9, 9)]
 
     def strategy_initialize(self, my_player_index: int):
         return game.character_class.CharacterClass.ARCHER
 
     def move_action_decision(self, game_state: GameState, my_player_index: int) -> Position:
-        self.get_start_pos((game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y))
+        curr_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
 
-        pos_to_move = self.go_to_middle((game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y))
+        self.get_start_pos(curr_pos)
+
+        # Keep player at spawn if they have more than 5 gold and are located at spawn.
+        if game_state.player_state_list[my_player_index].gold >= 5 and (curr_pos[0], curr_pos[1]) in self.start_positions:
+            return  game_state.player_state_list[my_player_index].position
+
+        pos_to_move = self.go_to_middle(curr_pos)
         game_state.player_state_list[my_player_index].position.x = pos_to_move[0]
         game_state.player_state_list[my_player_index].position.y = pos_to_move[1]
 
