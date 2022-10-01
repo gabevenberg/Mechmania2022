@@ -78,19 +78,35 @@ class KamakaziWizard(Strategy):
 
     def go_to_middle(self, curr_pos):
         if self.start_pos == StartPosEnum.top_left:
-            if curr_pos[0] < 4:
-                return (curr_pos[0] + 2, curr_pos[1] + 2)
+            if curr_pos == (0,0):
+                return (1, 2)
+            elif curr_pos == (1, 2):
+                return (3, 3)
+            elif curr_pos == (3, 3):
+                return (4,4)
 
         if self.start_pos == StartPosEnum.top_right:
-            if curr_pos[0] > 6:
-                return (curr_pos[0] - 2, curr_pos[1] + 2)
+            if curr_pos == (9,0):
+                return (8, 2)
+            elif curr_pos == (8,2):
+                return (6,3)
+            elif curr_pos == (6,3):
+                return (5, 4)
 
         if self.start_pos == StartPosEnum.bottom_left:
-            if curr_pos[0] < 4:
-                return (curr_pos[0] + 2, curr_pos[1] - 2)
+            if curr_pos == (0,9):
+                return (1,7)
+            elif curr_pos == (1, 7):
+                return (3, 6)
+            elif curr_pos == (3, 6):
+                return (4, 5)
 
         if self.start_pos == StartPosEnum.bottom_right:
-            if curr_pos[0] > 6:
-                return (curr_pos[0] - 2, curr_pos[1] - 2)
+            if curr_pos == (9,9):
+                return (8, 7)
+            elif curr_pos == (8, 7):
+                return (6, 6)
+            elif curr_pos == (6, 6):
+                return (5, 5)
 
         return curr_pos
