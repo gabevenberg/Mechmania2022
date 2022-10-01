@@ -1,5 +1,4 @@
 
-from sympy import im
 from strategy.kamakazi import Kamakazi
 
 from strategy.starter_strategy import StarterStrategy
@@ -14,4 +13,4 @@ from strategy.hunting_knight import HuntingKnight
 """
 def get_strategy(player_index: int) -> Strategy:  
   
-  return HuntingKnight()
+  return Kamakazi()

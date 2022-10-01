@@ -40,9 +40,45 @@ class Kamakazi(Strategy):
     def attack_action_decision(self, game_state: GameState, my_player_index: int) -> int:
         list = [0,1,2,3]
         list.remove(my_player_index)
+        our_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
+        lowest_health_enemy = Random().randint(0,2)
+        lowest_knight_enemy = Random().randint(0,2)
+        hunting_scope_enemy = Random().randint(0,2)
         for enemy in list:
-            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
+            enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            # get Lowest health enemy in range
+            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health and self.enemy_in_attack_range(our_pos, enemy_pos):
+                lowest_health_enemy = enemy
+            # get Lowest health knight in range
+            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_knight_enemy].health and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT and self.enemy_in_attack_range(our_pos, enemy_pos):
+                lowest_knight_enemy = enemy
+            # get enemy using hunter scopes
+            
+            if game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE and self.enemy_in_attack_range(enemy_pos, our_pos):
+                hunting_scope_enemy = enemy
+            
+            # Free point if they are  a wizard/archer and we are a knight. No matter what we one shot and it's free points
+            if game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD and self.enemy_in_attack_range(enemy_pos, our_pos):
                 return enemy
+
+            # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
+            
+            if hunting_scope_enemy is not None and game_state.player_state_list[lowest_health_enemy].health  >2:
+                final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
+                if self.enemy_in_attack_range(final_attack_pos, our_pos):
+                    return hunting_scope_enemy
+            else:
+                final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
+                if self.enemy_in_attack_range(final_attack_pos, our_pos):
+                    return lowest_health_enemy
+
+           
+            # Random enemy in range if specified 
+            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <4 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <4:
+                return lowest_health_enemy
+            return lowest_health_enemy
+                
+        return list[Random().randint(0, 2)]
                 
         return list[Random().randint(0, 2)]
 
@@ -54,14 +90,28 @@ class Kamakazi(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
+        list = [0,1,2,3]
+        list.remove(my_player_index)
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
-        goal = ((4,4),(5,4),(4,5),(5,5))
-        curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
-        if game_state.player_state_list[my_player_index].item == Item.SHIELD:
-            if curr_pos not in self.start_positions and curr_pos not in goal:
+        for enemy in list:
+            range_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            if self.enemy_in_attack_range(range_pos, my_pos):
                 return True
+        # goal = ((4,4),(5,4),(4,5),(5,5))
+        # curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
+        # if game_state.player_state_list[my_player_index].item == Item.SHIELD:
+        #     if curr_pos not in self.start_positions and curr_pos not in goal:
+        #         return True
+
         return False
 
+
+
+ 
+    def enemy_in_attack_range(self, enemy_pos, our_pos):
+        if abs(enemy_pos[0] - our_pos[0]) < 2 and abs(enemy_pos[1] - our_pos[1]) < 2:
+            return True
+        return False
 
 
     def get_start_pos(self, curr_pos):
@@ -74,6 +124,9 @@ class Kamakazi(Strategy):
         elif curr_pos == (9, 9):
             self.start_pos = StartPosEnum.bottom_right
     
+
+
+
 
     def go_to_middle(self, curr_pos):
         if self.start_pos == StartPosEnum.top_left:
