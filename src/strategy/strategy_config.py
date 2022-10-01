@@ -1,3 +1,4 @@
+from strategy.dumb_knight import DumbKnight
 from strategy.starter_strategy import StarterStrategy
 from strategy.strategy import Strategy
 

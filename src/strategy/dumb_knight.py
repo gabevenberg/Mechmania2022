@@ -18,6 +18,10 @@ class DumbKnight(Strategy):
         return Random().randint(0, 3)
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
+        my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
+        if my_pos == (0,0) or my_pos == (0,9) or my_pos == (9,0) or my_pos == (9,9):
+            if game_state.player_state_list[my_player_index].gold >= 5:
+                return Item.SHIELD
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
