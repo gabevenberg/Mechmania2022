@@ -63,15 +63,16 @@ class HuntingKnight(Strategy):
 
             # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
             
-            if hunting_scope_enemy is not None:
+            if hunting_scope_enemy is not None and game_state.player_state_list[lowest_health_enemy].health  >6:
                 final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
                 if self.enemy_in_attack_range(final_attack_pos, our_pos):
                     return hunting_scope_enemy
-
-            final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
-            if self.enemy_in_attack_range(final_attack_pos, our_pos):
-                return lowest_health_enemy
-            
+            else:
+                final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
+                if self.enemy_in_attack_range(final_attack_pos, our_pos):
+                    return lowest_health_enemy
+                
+           
             # Random enemy in range if specified 
             if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
                 return enemy
@@ -91,7 +92,7 @@ class HuntingKnight(Strategy):
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
         for enemy in list:
             range_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
-            if self.enemy_in_attack_range(range_pos, my_pos) and game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE:
+            if self.enemy_in_attack_range(range_pos, my_pos):
                 return True
         # goal = ((4,4),(5,4),(4,5),(5,5))
         # curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
