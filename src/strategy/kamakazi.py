@@ -47,8 +47,12 @@ class Kamakazi(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
+        my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
+        goal = ((4,4),(5,4),(4,5),(5,5))
         if game_state.player_state_list[my_player_index].item == Item.SHIELD:
-            return True
+            for x in goal:
+                if my_pos == x:
+                    return True
         return False
 
 
