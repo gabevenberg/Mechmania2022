@@ -26,7 +26,7 @@ class BattleArcher(Strategy):
 
         self.get_start_pos(curr_pos)
 
-        # Keep player at spawn if they have more than 5 gold and are located at spawn and dont already have an item.
+        # Keep player at spawn if they have more than 8 gold and are located at spawn and dont already have an item.
         if (game_state.player_state_list[my_player_index].gold >= 8
             and (curr_pos[0], curr_pos[1]) in self.start_positions
             and game_state.player_state_list[my_player_index].item==Item.NONE
@@ -74,7 +74,7 @@ class BattleArcher(Strategy):
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
         goal = ((4,4),(5,4),(4,5),(5,5))
         curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
-        if game_state.player_state_list[my_player_index].item == Item.SHIELD:
+        if game_state.player_state_list[my_player_index].item == Item.RALLY_BANNER:
             if curr_pos not in self.start_positions and curr_pos not in goal:
                  return True
 
@@ -137,9 +137,9 @@ class BattleArcher(Strategy):
         for i in indexes:
             enemies.append((game_state.player_state_list[i], i))
         for enemy in enemies:
-            enemy_pos = (enemy.position[0].x, enemy[0].position.y)
+            enemy_pos = (enemy[0].position.x, enemy[0].position.y)
             if enemy_pos in goals:
-                enemy_info.append({'position':enemy_pos, 'health':enemy[0].health, 'score':enemy[0].score})
+                enemy_info.append({'position':enemy_pos, 'health':enemy[0].health, 'score':enemy[0].score, 'index':enemy[1]})
         return enemy_info
 
     def who_killable(self, game_state, indexes, us):
