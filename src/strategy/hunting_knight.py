@@ -71,11 +71,12 @@ class HuntingKnight(Strategy):
                 final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
                 if self.enemy_in_attack_range(final_attack_pos, our_pos):
                     return lowest_health_enemy
-                
+
            
             # Random enemy in range if specified 
             if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
-                return enemy
+                return lowest_health_enemy
+            return lowest_health_enemy
                 
         return list[Random().randint(0, 2)]
 
