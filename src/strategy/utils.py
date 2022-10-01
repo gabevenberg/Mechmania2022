@@ -21,16 +21,9 @@ def enemy_is_killable(us, enemy, game_state:GameState):
     return game_state.player_state_list[enemy].health < get_damage(us, enemy, game_state)
 
 def get_damage(us, enemy, game_state:GameState):
-    damage=0
-    if game_state.player_state_list[us].character_class==game.character_class.CharacterClass.KNIGHT:
-        damage=6
-    elif game_state.player_state_list[us].character_class==game.character_class.CharacterClass.WIZARD:
-        damage=4
-    elif game_state.player_state_list[us].character_class==game.character_class.CharacterClass.ARCHER:
-        damage=2
     if game_state.player_state_list[enemy].item==Item.PROCRUSTEAN_IRON:
-        damage=4
-    return damage
+        return 4
+    return game_state.player_state_list[us].health
 
 
 def get_start_pos(player_index):
