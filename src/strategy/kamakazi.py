@@ -107,6 +107,13 @@ class Kamakazi(Strategy):
 
 
 
+ 
+    def enemy_in_attack_range(self, enemy_pos, our_pos):
+        if abs(enemy_pos[0] - our_pos[0]) < 2 and abs(enemy_pos[1] - our_pos[1]) < 2:
+            return True
+        return False
+
+
     def get_start_pos(self, curr_pos):
         if curr_pos == (0, 0):
             self.start_pos = StartPosEnum.top_left
@@ -117,6 +124,9 @@ class Kamakazi(Strategy):
         elif curr_pos == (9, 9):
             self.start_pos = StartPosEnum.bottom_right
     
+
+
+
 
     def go_to_middle(self, curr_pos):
         if self.start_pos == StartPosEnum.top_left:
