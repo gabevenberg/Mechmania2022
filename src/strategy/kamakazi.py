@@ -47,7 +47,10 @@ class Kamakazi(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
+        if game_state.player_state_list[my_player_index].item == Item.SHIELD:
+            return True
         return False
+
 
 
     def get_start_pos(self, curr_pos):
@@ -87,3 +90,4 @@ class Kamakazi(Strategy):
                 return (curr_pos[0], curr_pos[1] - 4)
 
         return curr_pos
+
