@@ -27,8 +27,11 @@ class Kamakazi(Strategy):
 
         self.get_start_pos(curr_pos)
 
-        # Keep player at spawn if they have more than 5 gold and are located at spawn.
-        if game_state.player_state_list[my_player_index].gold >= 8 and (curr_pos[0], curr_pos[1]) in self.start_positions:
+        # Keep player at spawn if they have more than 5 gold and are located at spawn and dont already have an item.
+        if (game_state.player_state_list[my_player_index].gold >= 8
+            and (curr_pos[0], curr_pos[1]) in self.start_positions
+            and game_state.player_state_list[my_player_index].item==Item.NONE
+            ):
             return  game_state.player_state_list[my_player_index].position
 
         pos_to_move = self.go_to_middle(curr_pos)
@@ -110,7 +113,7 @@ class Kamakazi(Strategy):
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
         if my_pos == (0,0) or my_pos == (0,9) or my_pos == (9,0) or my_pos == (9,9):
-            if game_state.player_state_list[my_player_index].gold >= 5:
+            if (game_state.player_state_list[my_player_index].gold >= 5):
                 return Item.SHIELD
         return Item.NONE
 
