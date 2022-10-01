@@ -59,23 +59,37 @@ class Kamakazi(Strategy):
             if self.enemy_is_killable(my_player_index, enemy, game_state):
                 return enemy
             # get Lowest health enemy in range
-            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health and self.enemy_in_attack_range(our_pos, enemy_pos):
+            if (game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health
+                and self.enemy_in_attack_range(our_pos, enemy_pos)
+                ):
                 lowest_health_enemy = enemy
+
             # get Lowest health knight in range
-            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_knight_enemy].health and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT and self.enemy_in_attack_range(our_pos, enemy_pos):
+            if (game_state.player_state_list[enemy].health
+                < game_state.player_state_list[lowest_knight_enemy].health
+                and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT
+                and self.enemy_in_attack_range(our_pos, enemy_pos)
+                ):
                 lowest_knight_enemy = enemy
+
             # get enemy using hunter scopes
-            
-            if game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE and self.enemy_in_attack_range(enemy_pos, our_pos):
+            if (game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE
+                and self.enemy_in_attack_range(enemy_pos, our_pos)
+                ):
                 hunting_scope_enemy = enemy
             
             # Free point if they are  a wizard/archer and we are a knight. No matter what we one shot and it's free points
-            if game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD and self.enemy_in_attack_range(enemy_pos, our_pos):
+            if (game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER
+                or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD
+                and self.enemy_in_attack_range(enemy_pos, our_pos)
+                ):
                 return enemy
 
             # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
             
-            if hunting_scope_enemy is not None and game_state.player_state_list[lowest_health_enemy].health  >2:
+            if (hunting_scope_enemy is not None
+                and game_state.player_state_list[lowest_health_enemy].health  >2
+                ):
                 final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
                 if self.enemy_in_attack_range(final_attack_pos, our_pos):
                     return hunting_scope_enemy
@@ -84,12 +98,12 @@ class Kamakazi(Strategy):
                 if self.enemy_in_attack_range(final_attack_pos, our_pos):
                     return lowest_health_enemy
 
-           
             # Random enemy in range if specified 
-            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <4 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <4:
+            if (abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <4
+                and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <4):
                 return lowest_health_enemy
             return lowest_health_enemy
-                
+
         return target_list[Random().randint(0, 2)]
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
