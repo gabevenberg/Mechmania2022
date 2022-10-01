@@ -1,5 +1,5 @@
 #ignore gamelogs
-gamelogs*.json
+game_*.json
 #zipapp output.
 *.pyz
 # Byte-compiled / optimized / DLL files
