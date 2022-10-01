@@ -58,27 +58,27 @@ class Kamakazi(Strategy):
             # if killable enemy is in range, kill it.
             if self.enemy_is_killable(my_player_index, enemy, game_state):
                 return enemy
-            # get Lowest health enemy in range
-            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health and self.enemy_in_attack_range(our_pos, enemy_pos):
-                lowest_health_enemy = enemy
-            # get Lowest health knight in range
-            if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_knight_enemy].health and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT and self.enemy_in_attack_range(our_pos, enemy_pos):
-                lowest_knight_enemy = enemy
-            # get enemy using hunter scopes
+            # # get Lowest health enemy in range
+            # if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health and self.enemy_in_attack_range(our_pos, enemy_pos):
+            #     lowest_health_enemy = enemy
+            # # get Lowest health knight in range
+            # if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_knight_enemy].health and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT and self.enemy_in_attack_range(our_pos, enemy_pos):
+            #     lowest_knight_enemy = enemy
+            # # get enemy using hunter scopes
             
-            if game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE and self.enemy_in_attack_range(enemy_pos, our_pos):
-                hunting_scope_enemy = enemy
+            # if game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE and self.enemy_in_attack_range(enemy_pos, our_pos):
+            #     hunting_scope_enemy = enemy
             
-            # Free point if they are  a wizard/archer and we are a knight. No matter what we one shot and it's free points
-            if game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD and self.enemy_in_attack_range(enemy_pos, our_pos):
-                return enemy
+            # # Free point if they are  a wizard/archer and we are a knight. No matter what we one shot and it's free points
+            # if game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD and self.enemy_in_attack_range(enemy_pos, our_pos):
+            #     return enemy
 
-            # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
+            # # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
             
-            if hunting_scope_enemy is not None and game_state.player_state_list[lowest_health_enemy].health  >2:
-                final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
-                if self.enemy_in_attack_range(final_attack_pos, our_pos):
-                    return hunting_scope_enemy
+            # if hunting_scope_enemy is not None and game_state.player_state_list[lowest_health_enemy].health  >2:
+            #     final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
+            #     if self.enemy_in_attack_range(final_attack_pos, our_pos):
+            #         return hunting_scope_enemy
             else:
                 final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
                 if self.enemy_in_attack_range(final_attack_pos, our_pos):
@@ -100,13 +100,6 @@ class Kamakazi(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
-        list = [0,1,2,3]
-        list.remove(my_player_index)
-        # my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
-        # for enemy in list:
-        #     range_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
-        #     if self.enemy_in_attack_range(range_pos, my_pos):
-        #         return True
         goal = ((4,4),(5,4),(4,5),(5,5))
         curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
         if game_state.player_state_list[my_player_index].item == Item.SHIELD:
@@ -147,9 +140,6 @@ class Kamakazi(Strategy):
             self.start_pos = StartPosEnum.bottom_right
     
 
-
-
-
     def go_to_middle(self, curr_pos):
         if self.start_pos == StartPosEnum.top_left:
             if curr_pos[0] < 4:
@@ -168,4 +158,21 @@ class Kamakazi(Strategy):
                 return (curr_pos[0] - 2, curr_pos[1] - 2)
 
         return curr_pos
+
+
+    
+    def who_on_goal(self, game_state, goals, indexes):
+        enemies = []
+        enemy_info = []
+        for i in indexes:
+            enemies.append(game_state.player_state_list[i])
+        for enemy in enemies:
+            enemy_pos = (enemy.position.x, enemy.position.y)
+            if enemy_pos in goals:
+                enemy_info.append(({'position':enemy_pos, 'health':enemy.health}))
+        return enemy_info
+
+
+
+        
 
