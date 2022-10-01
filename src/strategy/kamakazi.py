@@ -1,4 +1,3 @@
-from random import Random
 from game.game_state import GameState
 import game.character_class
 
@@ -45,6 +44,7 @@ class Kamakazi(Strategy):
         target_list.remove(my_player_index)
         our_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
         attack_range = game_state.player_state_list[my_player_index].stat_set.range
+        goals=((4,4),(4,5),(5,4),(5,5))
 
         #immediately filters out all targets not in range.
         for enemy in target_list:
@@ -54,61 +54,15 @@ class Kamakazi(Strategy):
         if len(target_list)==0:
             return my_player_index
 
-        lowest_health_enemy = 0
-        lowest_knight_enemy = 0
-        hunting_scope_enemy = 0
-        for enemy in target_list:
-            enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
-            # if killable enemy is in range, kill it.
-            if self.enemy_is_killable(my_player_index, enemy, game_state):
-                return enemy
-            # get Lowest health enemy in range
-            if (game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health
-                and self.enemy_in_attack_range(our_pos, enemy_pos)
-                ):
-                lowest_health_enemy = enemy
-
-            # get Lowest health knight in range
-            if (game_state.player_state_list[enemy].health
-                < game_state.player_state_list[lowest_knight_enemy].health
-                and game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.KNIGHT
-                and self.enemy_in_attack_range(our_pos, enemy_pos)
-                ):
-                lowest_knight_enemy = enemy
-
-            # get enemy using hunter scopes
-            if (game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE
-                and self.enemy_in_attack_range(enemy_pos, our_pos)
-                ):
-                hunting_scope_enemy = enemy
-            
-            # Free point if they are  a wizard/archer and we are a knight. No matter what we one shot and it's free points
-            if (game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.ARCHER
-                or game_state.player_state_list[enemy].character_class == game.character_class.CharacterClass.WIZARD
-                and self.enemy_in_attack_range(enemy_pos, our_pos)
-                ):
-                return enemy
-
-            # # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
-            
-            if (hunting_scope_enemy is not None
-                and game_state.player_state_list[lowest_health_enemy].health  >2
-                ):
-                final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
-                if self.enemy_in_attack_range(final_attack_pos, our_pos):
-                    return hunting_scope_enemy
-            else:
-                final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
-                if self.enemy_in_attack_range(final_attack_pos, our_pos):
-                    return lowest_health_enemy
-
-            # Random enemy in range if specified 
-            if (abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <4
-                and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <4):
-                return lowest_health_enemy
-            return lowest_health_enemy
-
-        return target_list[Random().randint(0, 2)]
+        who_killable = self.who_killable(game_state, target_list, my_player_index)
+        if len(who_killable)>0:
+            target= max(who_killable, key=lambda x:x['score'])
+            return target['index']
+        who_on_goal=self.who_on_goal(game_state, goals, target_list)
+        if len(who_on_goal)>0:
+            target= max(who_on_goal, key=lambda x:x['score'])
+            return target['index']
+        return target_list[0]
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
@@ -177,20 +131,23 @@ class Kamakazi(Strategy):
 
         return curr_pos
 
-
-    
     def who_on_goal(self, game_state, goals, indexes):
         enemies = []
         enemy_info = []
         for i in indexes:
-            enemies.append(game_state.player_state_list[i])
+            enemies.append((game_state.player_state_list[i], i))
         for enemy in enemies:
-            enemy_pos = (enemy.position.x, enemy.position.y)
+            enemy_pos = (enemy.position[0].x, enemy[0].position.y)
             if enemy_pos in goals:
-                enemy_info.append(({'position':enemy_pos, 'health':enemy.health}))
+                enemy_info.append({'position':enemy_pos, 'health':enemy[0].health, 'score':enemy[0].score})
         return enemy_info
 
-
-
-        
-
+    def who_killable(self, game_state, indexes, us):
+        enemies = []
+        enemy_info = []
+        for i in indexes:
+            if self.enemy_is_killable(us, i, game_state):
+                enemies.append((game_state.player_state_list[i], i))
+        for enemy in enemies:
+            enemy_info.append({'index':enemy[1], 'health':enemy[0].health, 'score':enemy[0].score})
+        return enemy_info
