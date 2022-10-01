@@ -1,5 +1,4 @@
 
-from sympy import im
 from strategy.kamakazi import Kamakazi
 
 from strategy.starter_strategy import StarterStrategy
