@@ -14,4 +14,4 @@ from strategy.kamikazi_wiz import KamakaziWizard
 """
 def get_strategy(player_index: int) -> Strategy:  
   
-  return Kamakazi()
+  return KamakaziWizard()
