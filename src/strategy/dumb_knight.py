@@ -31,7 +31,13 @@ class DumbKnight(Strategy):
         return game_state.player_state_list[my_player_index].position
 
     def attack_action_decision(self, game_state: GameState, my_player_index: int) -> int:
-        return Random().randint(0, 3)
+        list = [0,1,2,3]
+        list.remove(my_player_index)
+        for enemy in list:
+            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
+                return enemy
+                
+        return list[Random().randint(0, 2)]
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 

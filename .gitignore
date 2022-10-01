@@ -133,3 +133,4 @@ dmypy.json
 .pyre/
 Engine.jar
 .DS_Store
+Visualizer/

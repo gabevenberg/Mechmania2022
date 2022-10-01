@@ -1,7 +1,7 @@
 from strategy.dumb_knight import DumbKnight
 from strategy.starter_strategy import StarterStrategy
 from strategy.strategy import Strategy
-
+from strategy.dumb_knight import DumbKnight
 """Return the strategy that your bot should use.
 
 :param playerIndex: A player index that can be used if necessary.
