@@ -13,6 +13,7 @@ class KamakaziWizard(Strategy):
     def __init__(self):
         self.start_pos = -1
         self.start_positions = [(0,0), (9, 0), (0, 9), (9, 9)]
+        self.path = [(3,3),(6,3),(3,6),(6,6)]
 
     def strategy_initialize(self, my_player_index: int):
         return game.character_class.CharacterClass.WIZARD
@@ -68,10 +69,10 @@ class KamakaziWizard(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
-        goal = ((4,4),(5,4),(4,5),(5,5))
-        curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
-        if game_state.player_state_list[my_player_index].item == Item.SHIELD:
-            if curr_pos not in self.start_positions and curr_pos not in goal:
+        my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
+        for coords in self.path:
+            if my_pos == coords and game_state.player_state_list[my_player_index].item == Item.SHIELD:
+
                  return True
 
         return False
