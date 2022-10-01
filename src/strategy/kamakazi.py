@@ -38,14 +38,26 @@ class Kamakazi(Strategy):
         return game_state.player_state_list[my_player_index].position
 
     def attack_action_decision(self, game_state: GameState, my_player_index: int) -> int:
-        list = [0,1,2,3]
-        list.remove(my_player_index)
+        target_list = [0,1,2,3]
+        target_list.remove(my_player_index)
         our_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
-        lowest_health_enemy = Random().randint(0,2)
-        lowest_knight_enemy = Random().randint(0,2)
-        hunting_scope_enemy = Random().randint(0,2)
-        for enemy in list:
+
+        #immediately filters out all targets not in range.
+        for enemy in target_list:
             enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            if not self.enemy_in_attack_range(our_pos, enemy_pos):
+                target_list.remove(enemy)
+        if len(target_list)==0:
+            return my_player_index
+
+        lowest_health_enemy = 0
+        lowest_knight_enemy = 0
+        hunting_scope_enemy = 0
+        for enemy in target_list:
+            enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            # if killable enemy is in range, kill it.
+            if self.enemy_is_killable(my_player_index, enemy, game_state):
+                return enemy
             # get Lowest health enemy in range
             if game_state.player_state_list[enemy].health < game_state.player_state_list[lowest_health_enemy].health and self.enemy_in_attack_range(our_pos, enemy_pos):
                 lowest_health_enemy = enemy
@@ -78,9 +90,7 @@ class Kamakazi(Strategy):
                 return lowest_health_enemy
             return lowest_health_enemy
                 
-        return list[Random().randint(0, 2)]
-                
-        return list[Random().randint(0, 2)]
+        return target_list[Random().randint(0, 2)]
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
@@ -104,14 +114,26 @@ class Kamakazi(Strategy):
         #         return True
 
         return False
-
-
-
  
     def enemy_in_attack_range(self, enemy_pos, our_pos):
         if abs(enemy_pos[0] - our_pos[0]) < 2 and abs(enemy_pos[1] - our_pos[1]) < 2:
             return True
         return False
+
+    def enemy_is_killable(self, us, enemy, game_state:GameState):
+        return game_state.player_state_list[enemy].health < self.get_damage(us, enemy, game_state)
+
+    def get_damage(self, us, enemy, game_state:GameState):
+        damage=0
+        if game_state.player_state_list[us].character_class==game.character_class.CharacterClass.KNIGHT:
+            damage=6
+        elif game_state.player_state_list[us].character_class==game.character_class.CharacterClass.WIZARD:
+            damage=4
+        elif game_state.player_state_list[us].character_class==game.character_class.CharacterClass.ARCHER:
+            damage=2
+        if game_state.player_state_list[enemy].item==Item.PROCRUSTEAN_IRON:
+            damage=4
+        return damage
 
 
     def get_start_pos(self, curr_pos):
