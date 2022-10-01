@@ -62,7 +62,7 @@ class Kamakazi(Strategy):
         if len(who_on_goal)>0:
             target= max(who_on_goal, key=lambda x:x['score'])
             return target['index']
-        return target_list[0]
+        return max(target_list, key=lambda x:game_state.player_state_list[x].score)
 
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
