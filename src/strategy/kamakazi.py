@@ -137,9 +137,9 @@ class Kamakazi(Strategy):
         for i in indexes:
             enemies.append((game_state.player_state_list[i], i))
         for enemy in enemies:
-            enemy_pos = (enemy.position[0].x, enemy[0].position.y)
+            enemy_pos = (enemy[0].position.x, enemy[0].position.y)
             if enemy_pos in goals:
-                enemy_info.append({'position':enemy_pos, 'health':enemy[0].health, 'score':enemy[0].score})
+                enemy_info.append({'position':enemy_pos, 'health':enemy[0].health, 'score':enemy[0].score, 'index':enemy[1]})
         return enemy_info
 
     def who_killable(self, game_state, indexes, us):
