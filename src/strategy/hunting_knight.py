@@ -79,12 +79,19 @@ class HuntingKnight(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
+        list = [0,1,2,3]
+        list.remove(my_player_index)
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
-        goal = ((4,4),(5,4),(4,5),(5,5))
-        curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
-        if game_state.player_state_list[my_player_index].item == Item.SHIELD:
-            if curr_pos not in self.start_positions and curr_pos not in goal:
+        for enemy in list:
+            range_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            if self.enemy_in_attack_range(range_pos, my_pos) and game_state.player_state_list[enemy].item == Item.HUNTER_SCOPE:
                 return True
+        # goal = ((4,4),(5,4),(4,5),(5,5))
+        # curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
+        # if game_state.player_state_list[my_player_index].item == Item.SHIELD:
+        #     if curr_pos not in self.start_positions and curr_pos not in goal:
+        #         return True
+
         return False
 
     def enemy_in_attack_range(self, enemy_pos, our_pos):
