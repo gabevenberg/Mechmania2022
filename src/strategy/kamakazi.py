@@ -29,7 +29,7 @@ class Kamakazi(Strategy):
             ):
             return  game_state.player_state_list[my_player_index].position
 
-        pos_to_move = utils.go_to_middle(curr_pos, self.start_pos)
+        pos_to_move = self.go_to_middle(curr_pos)
         game_state.player_state_list[my_player_index].position.x = pos_to_move[0]
         game_state.player_state_list[my_player_index].position.y = pos_to_move[1]
 
@@ -75,3 +75,22 @@ class Kamakazi(Strategy):
                  return True
 
         return False
+
+    def go_to_middle(self, curr_pos):
+        if self.start_pos == StartPosEnum.top_left:
+            if curr_pos[0] < 4:
+                return (curr_pos[0] + 2, curr_pos[1] + 2)
+
+        if self.start_pos == StartPosEnum.top_right:
+            if curr_pos[0] > 6:
+                return (curr_pos[0] - 2, curr_pos[1] + 2)
+
+        if self.start_pos == StartPosEnum.bottom_left:
+            if curr_pos[0] < 4:
+                return (curr_pos[0] + 2, curr_pos[1] - 2)
+
+        if self.start_pos == StartPosEnum.bottom_right:
+            if curr_pos[0] > 6:
+                return (curr_pos[0] - 2, curr_pos[1] - 2)
+
+        return curr_pos
