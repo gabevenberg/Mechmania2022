@@ -1,4 +1,5 @@
 from random import Random
+from formatter import NullFormatter
 from game.game_state import GameState
 import game.character_class
 
@@ -61,10 +62,15 @@ class HuntingKnight(Strategy):
                 return enemy
 
             # To determine who to attack, change the index positions of 'final_attack_pos' and the return statement
+            if hunting_scope_enemy is not None:
+                final_attack_pos = (game_state.player_state_list[hunting_scope_enemy].position.x, game_state.player_state_list[hunting_scope_enemy].position.y)
+                if self.enemy_in_attack_range(final_attack_pos, our_pos):
+                    return hunting_scope_enemy
+
             final_attack_pos = (game_state.player_state_list[lowest_health_enemy].position.x, game_state.player_state_list[lowest_health_enemy].position.y)
             if self.enemy_in_attack_range(final_attack_pos, our_pos):
                 return lowest_health_enemy
-
+            
             # Random enemy in range if specified 
             if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
                 return enemy
