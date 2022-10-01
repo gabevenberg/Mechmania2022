@@ -34,7 +34,7 @@ class DumbKnight(Strategy):
         list = [0,1,2,3]
         list.remove(my_player_index)
         for enemy in list:
-            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <2 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <2:
+            if abs(game_state.player_state_list[my_player_index].position.x - game_state.player_state_list[enemy].position.x) <4 and abs(game_state.player_state_list[my_player_index].position.y - game_state.player_state_list[enemy].position.y) <4:
                 return enemy
                 
         return list[Random().randint(0, 2)]
