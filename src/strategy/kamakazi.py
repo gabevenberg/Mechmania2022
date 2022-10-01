@@ -41,11 +41,12 @@ class Kamakazi(Strategy):
         target_list = [0,1,2,3]
         target_list.remove(my_player_index)
         our_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
+        attack_range = game_state.player_state_list[my_player_index].stat_set.range
 
         #immediately filters out all targets not in range.
         for enemy in target_list:
             enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
-            if not self.enemy_in_attack_range(our_pos, enemy_pos):
+            if not self.enemy_in_attack_range(our_pos, enemy_pos, attack_range):
                 target_list.remove(enemy)
         if len(target_list)==0:
             return my_player_index
@@ -129,8 +130,8 @@ class Kamakazi(Strategy):
 
         return False
  
-    def enemy_in_attack_range(self, enemy_pos, our_pos):
-        if abs(enemy_pos[0] - our_pos[0]) < 2 and abs(enemy_pos[1] - our_pos[1]) < 2:
+    def enemy_in_attack_range(self, enemy_pos, our_pos, attack_range):
+        if abs(enemy_pos[0] - our_pos[0]) <= attack_range and abs(enemy_pos[1] - our_pos[1]) <= attack_range:
             return True
         return False
 
