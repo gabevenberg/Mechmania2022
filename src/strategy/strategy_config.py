@@ -13,4 +13,4 @@ from strategy.hunting_knight import HuntingKnight
 """
 def get_strategy(player_index: int) -> Strategy:  
   
-  return HuntingKnight()
+  return Kamakazi()
