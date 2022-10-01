@@ -23,7 +23,7 @@ def enemy_is_killable(us, enemy, game_state:GameState):
 def get_damage(us, enemy, game_state:GameState):
     if game_state.player_state_list[enemy].item==Item.PROCRUSTEAN_IRON:
         return 4
-    return game_state.player_state_list[us].health
+    return game_state.player_state_list[us].stat_set.damage
 
 
 def get_start_pos(player_index):
