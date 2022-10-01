@@ -9,6 +9,7 @@ class ItemModel():
 
 class Item(Enum):
     PROCRUSTEAN_IRON = ItemModel(StatSet(0, 0, 0, 0), 1, 8)
+    SHIELD = ItemModel(StatSet(0, 0, 0, 0), -1, 8)
     HEAVY_BROADSWORD = ItemModel(StatSet(0, 0, 0, 0), -1, 8)
     MAGIC_STAFF = ItemModel(StatSet(0, 0, 0, 0), 0, 8)
     STEEL_TIPPED_ARROW = ItemModel(StatSet(0, 0, 0, 0), 0, 8)
