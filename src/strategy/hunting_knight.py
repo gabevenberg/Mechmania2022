@@ -1,5 +1,4 @@
 from random import Random
-from formatter import NullFormatter
 from game.game_state import GameState
 import game.character_class
 
