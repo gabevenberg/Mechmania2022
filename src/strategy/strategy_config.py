@@ -1,4 +1,6 @@
-from strategy.dumb_knight import DumbKnight
+
+from strategy.kamakazi import Kamakazi
+
 from strategy.starter_strategy import StarterStrategy
 from strategy.strategy import Strategy
 from strategy.dumb_knight import DumbKnight
@@ -10,4 +12,4 @@ from strategy.dumb_knight import DumbKnight
 """
 def get_strategy(player_index: int) -> Strategy:  
   
-  return DumbKnight()
+  return Kamakazi()
