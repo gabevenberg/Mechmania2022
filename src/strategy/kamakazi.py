@@ -5,7 +5,7 @@ from game.item import Item
 
 from game.position import Position
 from strategy.strategy import Strategy
-from strategy.utils import StartPosEnum
+from strategy.utils import StartPosEnum, can_attack_us_after_move
 import strategy.utils as utils
 
 class Kamakazi(Strategy):
@@ -45,7 +45,7 @@ class Kamakazi(Strategy):
         #immediately filters out all targets not in range.
         for enemy in target_list:
             enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
-            if not utils.enemy_in_attack_range(our_pos, enemy_pos, attack_range):
+            if not utils.target_in_attack_range(our_pos, enemy_pos, attack_range):
                 target_list.remove(enemy)
         if len(target_list)==0:
             return my_player_index
@@ -68,12 +68,19 @@ class Kamakazi(Strategy):
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
+        #hacky
         goal = ((4,4),(5,4),(4,5),(5,5))
+        archer_danger_position=((2,2),(2,7),(7,2),(7,7))
+        enemy_indexes=[0,1,2,3]
         curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
         if game_state.player_state_list[my_player_index].item == Item.SHIELD:
             if curr_pos not in self.start_positions and curr_pos not in goal:
                  return True
-
+        for enemy in enemy_indexes:
+            enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
+            enemy_range=game_state.player_state_list[enemy].stat_set.range
+            if enemy_pos in archer_danger_position and enemy_range>=3:
+                return True
         return False
 
     def go_to_middle(self, curr_pos):
