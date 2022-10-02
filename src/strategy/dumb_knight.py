@@ -27,6 +27,14 @@ class DumbKnight(Strategy):
         pos_to_move = self.go_to_middle((game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y))
         game_state.player_state_list[my_player_index].position.x = pos_to_move[0]
         game_state.player_state_list[my_player_index].position.y = pos_to_move[1]
+        curr_pos = (game_state.player_state_list[my_player_index].position.x,  game_state.player_state_list[my_player_index].position.y)
+
+        # Keep player at spawn if they have more than 5 gold and are located at spawn and dont already have an item.
+        if (game_state.player_state_list[my_player_index].gold >= 8
+            and (curr_pos[0], curr_pos[1]) in self.start_positions
+            and game_state.player_state_list[my_player_index].item==Item.NONE
+            ):
+            return  game_state.player_state_list[my_player_index].position
 
         return game_state.player_state_list[my_player_index].position
 
@@ -42,8 +50,8 @@ class DumbKnight(Strategy):
     def buy_action_decision(self, game_state: GameState, my_player_index: int) -> Item:
         my_pos = (game_state.player_state_list[my_player_index].position.x,game_state.player_state_list[my_player_index].position.y) 
         if my_pos == (0,0) or my_pos == (0,9) or my_pos == (9,0) or my_pos == (9,9):
-            if game_state.player_state_list[my_player_index].gold >= 5:
-                return Item.SHIELD
+            if game_state.player_state_list[my_player_index].gold >= 8:
+                return Item.HUNTER_SCOPE
         return Item.NONE
 
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
@@ -64,26 +72,18 @@ class DumbKnight(Strategy):
     def go_to_middle(self, curr_pos):
         if self.start_pos == StartPosEnum.top_left:
             if curr_pos[0] < 4:
-                return (curr_pos[0] + 2, curr_pos[1])
-            elif curr_pos[1] < 4:
-                return (curr_pos[0], curr_pos[1] + 2)
+                return (curr_pos[0] + 1, curr_pos[1] + 1)
 
         if self.start_pos == StartPosEnum.top_right:
             if curr_pos[0] > 6:
-                return (curr_pos[0] - 2, curr_pos[1])
-            elif curr_pos[1] < 4:
-                return (curr_pos[0], curr_pos[1] + 2)
+                return (curr_pos[0] - 1, curr_pos[1] + 1)
 
         if self.start_pos == StartPosEnum.bottom_left:
             if curr_pos[0] < 4:
-                return (curr_pos[0] + 2, curr_pos[1])
-            elif curr_pos[1] > 6:
-                return (curr_pos[0], curr_pos[1] - 2)
+                return (curr_pos[0] + 1, curr_pos[1] - 1)
 
         if self.start_pos == StartPosEnum.bottom_right:
             if curr_pos[0] > 6:
-                return (curr_pos[0] - 2, curr_pos[1])
-            elif curr_pos[1] > 6:
-                return (curr_pos[0], curr_pos[1] - 2)
+                return (curr_pos[0] - 1, curr_pos[1] - 1)
 
         return curr_pos
