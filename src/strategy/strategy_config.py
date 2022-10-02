@@ -6,6 +6,7 @@ from strategy.strategy import Strategy
 from strategy.dumb_knight import DumbKnight
 from strategy.hunting_knight import HuntingKnight
 from strategy.kamikazi_wiz import KamakaziWizard
+import random import choice
 """Return the strategy that your bot should use.
 
 :param playerIndex: A player index that can be used if necessary.
@@ -14,4 +15,4 @@ from strategy.kamikazi_wiz import KamakaziWizard
 """
 def get_strategy(player_index: int) -> Strategy:  
   
-  return Kamakazi()
+  return choice([DumbKnight(), Kamakazi()])
