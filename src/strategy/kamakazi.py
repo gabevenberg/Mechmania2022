@@ -70,7 +70,16 @@ class Kamakazi(Strategy):
     def use_action_decision(self, game_state: GameState, my_player_index: int) -> bool:
         #hacky
         goal = ((4,4),(5,4),(4,5),(5,5))
-        archer_danger_position=((2,2),(2,7),(7,2),(7,7))
+        archer_danger_position= ()
+        if self.start_pos == StartPosEnum.top_left:
+            archer_danger_position = ((2,7), (7,2))
+        elif self.start_pos == StartPosEnum.top_right:
+            archer_danger_position = ((2,2), (7,7))
+        elif self.start_pos == StartPosEnum.bottom_left:
+            archer_danger_position = ((2,2), (7,7))
+        elif self.start_pos == StartPosEnum.bottom_right:
+            archer_danger_position = ((2,7), (7,2))
+        
         enemy_indexes=[0,1,2,3]
         curr_pos = (game_state.player_state_list[my_player_index].position.x, game_state.player_state_list[my_player_index].position.y)
         if game_state.player_state_list[my_player_index].item == Item.SHIELD:
@@ -79,7 +88,7 @@ class Kamakazi(Strategy):
         for enemy in enemy_indexes:
             enemy_pos = (game_state.player_state_list[enemy].position.x, game_state.player_state_list[enemy].position.y)
             enemy_range=game_state.player_state_list[enemy].stat_set.range
-            if enemy_pos in archer_danger_position and enemy_range>=3:
+            if enemy_pos in goal and enemy_range>=3:
                 return True
         return False
 
